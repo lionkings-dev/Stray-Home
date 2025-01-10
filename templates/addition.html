@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Stray Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='addition.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert library here -->
+  </head>
+
+<body>
+    <div class="container">   <!--รวมเนื้อหาในหน้าเว็บ-->
+
+        <div class="header">  <!--รวมลิงก์ที่ไปยังเว็บต่างๆ-->
+          <a href="{{ url_for('homepage') }}">
+            <img src="{{ url_for('static', filename='photo/home.png') }}" alt="Home">
+            </a>
+            <a href="{{ url_for('addition') }}">ADD PET</a>              
+            <a href="{{ url_for('myAddition') }}">MY ADDITION</a>
+            {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('StatusAdmin') }}">STATUS</a>
+            {% else %}
+            <a href="{{ url_for('statusUser') }}">STATUS</a>
+            {% endif %}
+            {% if session.get('name') %}
+                <a href="{{ url_for('myprofile') }}">Welcome, {{ session['name'] }}!</a>                
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{url_for('login')}}">Login</a>
+            {% endif %}        
+        </div>
+
+        <!--กล่องใหญ่สีขาว-->
+        <div class="add-pet-container">      
+            <h1>ADD PET</h1>
+
+            <form method="POST" action="{{ url_for('addition') }}" enctype=multipart/form-data>
+
+              <!--photo-->
+              <div class="form-group">                                                       <!--ใส่รูป-->
+                <div id="labelphoto">   <label for="photo">Add Photo</label> </div>
+                <div id="selectphoto"> 
+                  <input type="file" id="photo" name="photo" onchange="previewImage(this)">   <!--ปุ่มเลือกรูป-->
+                  <img id="preview" src="#" alt="Preview" style="display: none; max-width: 200px; max-height: 200px;">
+                </div>    <!--ปุ่มเลือกรูป-->
+              </div>
+
+              <!--name-->
+              <div class="form-group">
+                <div id=namelabel> <label for="name">Name</label>  </div> 
+                <div id=name> <input type="text" id="name" name="name">  </div>
+              </div>
+
+              <!--breed-->
+              <div class="form-group">
+                <div id=breedlabel> <label for="breed">Breed</label>   </div>              
+                <div id=breed> <input type="text" id="breed" name="breed"> </div>
+              </div>
+
+              <!--size-->
+              <div class="form-group">
+                <div id=sizelabel> <label for="size">Size</label> </div>
+                <div id="size">
+                <select id="size" name="size">
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+                </div>
+              </div>
+
+              <!--type-->
+              <div class="form-group">                      
+                <div id=typelabel><label for="type">Type</label> </div>
+                <div id=type><select id="type" name="type">
+                  <option value="Cat">Cat</option>
+                  <option value="Dog">Dog</option>
+                </select>
+                </div>
+              </div>
+
+              <!--gender-->
+              <div class="form-group">                      
+                <div id=genderlabel> <label for="gender">Gender</label> </div>
+                <div id=gender> <select id="gender" name="gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              </div>
+
+              <!--อายุ-->
+              <div class="form-group">                       
+                <div id=agelabel><label for="age">Age</label></div>
+                <div id=age><select id="age" name="age">
+                  <option value="less-12-months">Less than 12 months</option>
+                  <option value="12-60-months">12-60 months</option>
+                  <option value="more-60-months">More than 60 months</option>
+                </select>
+              </div>
+              </div>
+
+              <!--behavior-->
+              <div class="form-group">                      
+                <div id=behaviorlabel><label for="behaviour">Behavior</label></div>
+                <div id=behavior><input type="text" id="behavior" name="behaviour"></div>
+              </div>
+
+              <!--ster-->
+              <div class="form-group">
+                <div id=sterlabel><label for="sterilsation">Sterilzation</label></div>
+                <div id=ster><select id="sterilsation" name="sterilisation">
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="unknow">Unknow</option>
+                </select>
+              </div>
+              </div>
+
+              <!--colors-->
+              <div class="form-group">
+                <div id=colorlabel><label for="colors">Colors</label></div>
+                <div id=color><select id="colors" name="colors">
+                  <option value="all">All</option>
+                  <option value="brown">Brown</option>
+                  <option value="orange">Orange</option>
+                  <option value="white">White</option>
+                  <option value="Black">Black</option>
+                </select>
+                </div>
+              </div>
+              <!--province-->
+              <div class="form-group">
+                <div id=provincelabel> <label for="province">Province</label>   </div>              
+                <div id=province> <input type="text" id="province" name="province"> </div>
+              </div>
+
+              <!--street-->
+              <div class="form-group">
+                <div id=streetlabel> <label for="street">Street</label>   </div>              
+                <div id=street> <input type="text" id="street" name="street"> </div>
+              </div>
+
+              <!--district-->
+              <div class="form-group">
+                <div id=districtlabel> <label for="district">District</label>   </div>              
+                <div id=district> <input type="text" id="district" name="district"> </div>
+              </div>
+
+              <!--sub district-->
+              <div class="form-group">
+                <div id=sub_districtlabel> <label for="sub_district">Sub_district</label>   </div>              
+                <div id=sub_district> <input type="text" id="sub_district" name="sub_district"> </div>
+              </div>
+
+              <!--zipcode-->
+              <div class="form-group">
+                <div id=zipcodelabel> <label for="zipcode">Zipcode</label>   </div>              
+                <div id=zipcode> <input type="text" id="zipcode" name="zipcode"> </div>
+              </div>
+
+              <!--ปุ่มadd-->
+              <div id="add">
+                <button type="submit">ADD</button>
+              </div>
+
+            </form>
+          </div>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+          if ('{{ category }}' == 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: '{{ message }}',
+              showConfirmButton: true
+            })
+
+          } else if ('{{ category }}' == 'error') {
+            Swal.fire({
+              icon: 'error',
+              title: '{{ message }}',
+              showConfirmButton: true
+            })
+
+          } else if ('{{ category }}' == 'info') {
+    Swal.fire({
+        icon: 'info',
+        title: '{{ message }}',
+        showConfirmButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{{ url_for('login') }}";
+        }
+    })
+}
+          
+        </script>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <script>
+      function previewImage(input) {
+          var preview = document.getElementById('preview');
+          if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                  preview.src = e.target.result;
+                  preview.style.display = 'block';
+              }
+              reader.readAsDataURL(input.files[0]);
+          } else {
+              preview.src = '#';
+              preview.style.display = 'none';
+          }
+      }
+  </script>
+</body>
+
+</html>

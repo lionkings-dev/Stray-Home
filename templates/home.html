@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <form method="POST">
+        <label for="id">ID:</label>
+        <input type="text" name="id" required>
+        <label for="name">Name:</label>
+        <input type="text" name="name" required>
+        <label for="age">Age:</label>
+        <input type="text" name="age" required>
+        <input type="submit" value="Submit">
+    </form>
+
+    <form action="/view" method="get">
+        <input type="submit" value="View All Data">
+    </form>
+</body>
+</html>

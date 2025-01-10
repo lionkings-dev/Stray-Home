@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body style="background-image: url('{{ url_for('static', filename='photo/login/login-background.jpg') }}'); background-size: cover; background-position: center;">  
+    <div class="profile-container">
+    <div class="profile-box">
+      <img class="profile-icon" src="{{ url_for('static', filename='photo/profile-icon.png') }}" alt="Profile Icon">
+      <button class="profile-close-btn" onclick="location.href='{{url_for('homepage')}}';"><img src="{{ url_for('static', filename='photo/login/close-icon.png') }}" alt="Home"></button>
+      <p><strong>UserID:</strong> <span id="display-name">{{ session.get('userID') }}</span></p>
+      <p><strong>Name:</strong> <span id="display-name">{{ session.get('name') }}</span></p>
+      <p><strong>Username:</strong> <span id="display-username">{{ session.get('username') }}</span></p>
+      <p><strong>Phone:</strong> <span id="display-phone">{{ session.get('phone') }}</span></p>
+      <p><strong>Citizen ID:</strong> <span id="display-ssn">{{ session.get('ssn') }}</span></p>
+      <p><strong>Gender:</strong> <span id="display-gender">{{ session.get('gender') }}</span></p>
+      <p><strong>Birthdate:</strong> <span id="display-birthdate">{{ birthdate.strftime('%d/%m/%Y') if birthdate else '' }}</span></p>
+      <button class="edit-btn" onclick="location.href='{{url_for('updateprofile')}}';">EDIT</button>    </div>
+  </div>
+
+  <script>
+    // Get data from localStorage
+    const name = "{{ name }}";
+    const username = "{{ username }}";
+    const phone = "{{ phone }}";
+    const ssn = "{{ ssn }}";
+    const gender = "{{ gender }}";
+    const birthdate = "{{ birthdate }}";
+
+    // Display data
+    /*document.getElementById('display-name').innerText = name;
+    document.getElementById('display-username').innerText = username;
+    document.getElementById('display-phone').innerText = phone;
+    document.getElementById('display-ssn').innerText = ssn;
+    document.getElementById('display-gender').innerText = gender;
+    document.getElementById('display-birthdate').innerText = birthdate;*/
+  </script>
+</body>
+</html>

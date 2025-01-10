@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stray Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Status.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert library here -->
+</head>
+<body>
+    <div class="container">
+      <div class="header">  <!--รวมลิงก์ที่ไปยังเว็บต่างๆ-->
+        <a href="{{ url_for('homepage') }}">
+          <img src="{{ url_for('static', filename='photo/home.png') }}" alt="Home">
+          </a>
+          <a href="{{ url_for('addition') }}">ADD PET</a>              
+          <a href="{{ url_for('myAddition') }}">MY ADDITION</a>
+          {% if session.get('role') == 'admin' %}
+          <a href="{{ url_for('StatusAdmin') }}">STATUS</a>
+          {% else %}
+          <a href="{{ url_for('statusUser') }}">STATUS</a>
+          {% endif %}
+          {% if session.get('name') %}
+              <a href="{{ url_for('myprofile') }}">Welcome, {{ session['name'] }}!</a>                
+              <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+              <a href="{{url_for('login')}}">Login</a>
+          {% endif %}        
+      </div>
+      <div class="text-box">
+            <h2>STATUS</h2>
+        </div>
+        <div class="stary-pets-label">ALL MY REQUEST</div>
+
+        <table>
+          <tr>
+              <th>PET</th>
+              <th>DATE</th>
+              <th>STATUS</th>
+              <th>FILE</th>
+          </tr>
+          {% for pet in pets %}
+          <tr>
+              <td>{{ pet.name }}</td>
+              <td>{{ pet.date }}</td>
+              <td>{{ 'Approved' if pet.approve_request else 'Pending' }}</td>
+              <td>
+                  <a href="{{url_for('PermissionFormUser' , requestID=pet.requestID) }}">
+                      <img src="{{ url_for('static', filename='photo/folder.png') }}">
+                  </a>
+              </td>
+          </tr>
+          {% endfor %}
+      </table>
+    </div>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+          if ('{{ category }}' == 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: '{{ message }}',
+              showConfirmButton: true
+            })
+
+          } else if ('{{ category }}' == 'error') {
+            Swal.fire({
+              icon: 'error',
+              title: '{{ message }}',
+              showConfirmButton: true
+            })
+
+          } else if ('{{ category }}' == 'info') {
+    Swal.fire({
+        icon: 'info',
+        title: '{{ message }}',
+        showConfirmButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{{ url_for('login') }}";
+        }
+    })
+}
+          
+        </script>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+</body>
+</html>

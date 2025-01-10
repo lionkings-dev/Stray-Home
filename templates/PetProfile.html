@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Adoption</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='PetProfile.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert library here -->
+</head>
+<body>
+  <div class="containerInfo">
+    <a href="{{ url_for('homepage') }}" class="back-button">
+      <img src="{{ url_for('static', filename='photo/back.png') }}" alt="Home">
+    </a>
+    <div onclick="backToGallery()">
+      <i class="fas fa-arrow-left"></i>
+    </div>
+    <div class="PetImages">
+      <img src="{{ url_for('static', filename='photo/' + (pet_data['ImageID'] if pet_data.get('ImageID') else 'pet_image_1') + '.jpg') }}" alt="Pet Image" id="mainPet"> 
+  </div>  
+    <div class="pet-info">
+      <h1 class="pet-name">{{ pet_data['name'] }}</h1>
+      <p class="found-date">Found Date: {{ pet_data['foundDate'] }}</p>
+      <div class="location-container">
+        <img src="{{ url_for('static', filename='photo/location.png') }}">
+        <div class="address">Location: {{ pet_data['location'] }}</div>
+      </div>
+      <div class="publish-alert">
+        <img src="{{ url_for('static', filename='photo/profile.png') }}" alt="Profile Picture">
+        <div class="publish-info">
+            <span class="name">Publisher: {{ pet_data['Uname'] }}</span>
+            <p class="status">Publish this alert</p>
+        </div>
+        <a href="mailto:straypet@email.com" class="chat-link">
+            <img src="{{ url_for('static', filename='photo/Chat.jpg') }}" alt="Email Icon">
+        </a>
+      </div>
+      <div class="pet-details">
+        <p class="breed-gender-sterilize">Breed: {{ pet_data['breed'] }}&emsp;Gender: {{ pet_data['gender'] }}&emsp;Sterilized: {{ pet_data['sterilization'] }}</p>
+      </div>
+      <p class="size-age-colors">Size: {{ pet_data['size'] }} &emsp; Age: {{ pet_data['age'] }} &emsp; Hair Color: <span class="color-{{ pet_data['hair_color']|lower }}">{{ pet_data['hair_color'] }}</span></p>
+      <div class="behavior">
+        <p >Behavior: {{ pet_data['behaviour'] }}</p>
+      </div>
+        <button class="adopt-btn" onclick="adoptPet()">ADOPT</button>   
+    </div>
+  </div>
+
+  <script>
+    function adoptPet() {
+        // Get the petID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const petData = JSON.parse(decodeURIComponent(urlParams.get('pet_data')));
+        const petID = petData.PetID;
+
+        // Send petID to Flask app
+        fetch('/adopt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                petID: petID,
+            })
+        }).then(response => {
+            if (response.ok) {
+              window.open('https://docs.google.com/forms/d/e/1FAIpQLSdpH1smKIB1CUcGKPsyOBhNZ-D9-N4rxIOyXRNmq8usBYJewQ/viewform', '_blank');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+          if ('{{ category }}' == 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: '{{ message }}',
+              showConfirmButton: true
+            })
+
+          } else if ('{{ category }}' == 'error') {
+            Swal.fire({
+              icon: 'error',
+              title: '{{ message }}',
+              showConfirmButton: true
+            })
+
+          } else if ('{{ category }}' == 'info') {
+    Swal.fire({
+        icon: 'info',
+        title: '{{ message }}',
+        showConfirmButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "{{ url_for('login') }}";
+        }
+    })
+}
+          
+        </script>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+</body>
+</html>
